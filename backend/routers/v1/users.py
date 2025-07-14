@@ -1,20 +1,20 @@
 from fastapi import APIRouter
-from ...schemas.account_schema import Account
+from ...schemas.user_schema import User
 
-router = APIRouter(prefix="/accounts", tags=["accounts"])
+router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/")
-async def get_accounts() -> list[Account]:
+async def get_users() -> list[User]:
     return [
-        Account(
+        User(
             id=1,
             fullname="John Doe",
             email="john.doe@example.com",
             phone_number="0812345678",
             id_card="1234567890123",
         ),
-        Account(
+        User(
             id=2,
             fullname="Jane Smith",
             email="jane.smith@example.com",
@@ -25,8 +25,8 @@ async def get_accounts() -> list[Account]:
 
 
 @router.get("/{account_id}")
-async def get_account(account_id: int) -> Account:
-    return Account(
+async def get_user(user_id: int) -> User:
+    return User(
         id=1,
         fullname="John Doe",
         email="john.doe@example.com",
@@ -35,16 +35,16 @@ async def get_account(account_id: int) -> Account:
     )
 
 
-@router.post("/")
-async def create_account(account: Account) -> Account:
-    return account
+@router.post("/register")
+async def create_user(user: User) -> User:
+    return user
 
 
-@router.put("/{account_id}")
-async def update_account(account_id: int, account: Account) -> Account:
-    return account
+@router.put("/{user_id}")
+async def update_user(user_id: int, user: User) -> User:
+    return user
 
 
-@router.delete("/{account_id}")
-async def delete_account(account_id: int) -> dict:
-    return {"message": f"Account with ID {account_id} has been deleted."}
+@router.delete("/delete/{user_id}")
+async def delete_user(user_id: int) -> dict:
+    return {"message": f"User with ID {user_id} has been deleted."}

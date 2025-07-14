@@ -7,6 +7,5 @@ class Province_state(str, Enum):
 
 
 class Province(BaseModel):
-    id: int
     name: str
-    secondary_province: Province_state
+    province_state: Province_state

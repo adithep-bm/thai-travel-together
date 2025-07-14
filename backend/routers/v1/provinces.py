@@ -7,15 +7,17 @@ router = APIRouter(prefix="/provinces", tags=["provinces"])
 @router.get("/")
 async def get_provinces() -> list[province_schema.Province]:
     return [
-        province_schema.Province(id=1, name="Bangkok"),
-        province_schema.Province(id=2, name="Chiang Mai"),
-        province_schema.Province(id=3, name="Phuket"),
+        province_schema.Province(id=1, name="Bangkok", province_state="primary"),
+        province_schema.Province(id=2, name="Chiang Mai", province_state="primary"),
+        province_schema.Province(id=3, name="Yala", province_state="secondary"),
     ]
 
 
 @router.get("/{province_id}")
 async def get_province(province_id: int) -> province_schema.Province:
-    return province_schema.Province(id=province_id, name="Sample Province")
+    return province_schema.Province(
+        id=province_id, name="Sample Province", province_state="primary"
+    )
 
 
 @router.post("/")
@@ -32,6 +34,6 @@ async def update_province(
     return province
 
 
-@router.delete("/{province_id}")
+@router.delete("/delete/{province_id}")
 async def delete_province(province_id: int) -> dict:
     return {"message": f"Province with ID {province_id} has been deleted."}

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from . import accounts
+from . import users, provinces
 
 router = APIRouter(prefix="/v1")
-router.include_router(accounts.router)
+router.include_router(users.router)
+router.include_router(provinces.router)
