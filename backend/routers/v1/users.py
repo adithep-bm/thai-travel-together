@@ -1,3 +1,4 @@
+from http.client import HTTPException
 from fastapi import APIRouter
 from ...schemas import user_schema
 from ...models import user_model
@@ -7,40 +8,25 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.get("/")
-async def get_users() -> list[user_schema.User]:
-    return [
-        user_schema.User(
-            id=1,
-            fullname="John Doe",
-            email="john.doe@example.com",
-            phone_number="0812345678",
-            id_card="1234567890123",
-        ),
-        user_schema.User(
-            id=2,
-            fullname="Jane Smith",
-            email="jane.smith@example.com",
-            phone_number="0898765432",
-            id_card="9876543210987",
-        ),
-    ]
+async def get_users(page=1, size_per_page = 50) -> list[user_model.User]:
+    db_users = models.session.exec(
+        user_model.User.select().offset((page - 1) * size_per_page).limit(size_per_page)
+    ).scalars().all()
+    # db_users = models.session.(user_model.User.select().offset((page-1)* size_per_page).limit(size_per_page)).scalars().all()
+    return db_users
 
 
 @router.get("/{account_id}")
 async def get_user(user_id: int) -> user_model.User:
     db_user = models.session.get(user_model.User, user_id)
-    if db_user is None:
-        return user_schema.User(
-            id=None,
-            fullname="Not Found",
-            email="Not Found",
-        )
+    if not db_user :
+        raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
 
 @router.post("/register")
-async def create_user(user: user_schema.User) -> user_model.User:
-    db_user = user_model.user_schema.User(**user.model_dump(exclude_unset=True))  # Convert Pydantic model to SQLModel
+async def create_user(user: user_model.User) -> user_model.User:
+    db_user = user_model.User(**user.model_dump(exclude_unset=True))  # Convert Pydantic model to SQLModel
     models.session.add(db_user)
     models.session.commit()
 
